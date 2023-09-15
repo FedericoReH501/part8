@@ -100,12 +100,17 @@ let books = [
 const typeDefs = `
     type Mutation{
       addBook(
-        title: String
-        published: Int
-        author: String
+        title: String!
+        published: Int!
+        author: String!
         id: String
-        genres:[String]
+        genres:[String]!
       ): Book
+      
+      editAuthor(
+        name: String!
+        setBornTo: Int!
+      ): Author
     }
     type Book {
         title: String
@@ -116,8 +121,8 @@ const typeDefs = `
         
     }
     type Author {
-        name: String
-        id: String
+        name: String!
+        id: String!
         born: Int
         bookCount: Int
         
@@ -142,6 +147,15 @@ const resolvers = {
       }
       books = books.concat(book);
       return book;
+    },
+    editAuthor: (root, args) => {
+      let author = authors.find((a) => a.name === args.name);
+      if (!author) {
+        return null;
+      }
+      author = { ...author, born: args.setBornTo };
+      authors = authors.map((a) => (a.name === author.name ? author : a));
+      return author;
     },
   },
   Query: {
