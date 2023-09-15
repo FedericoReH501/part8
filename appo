@@ -1,0 +1,7 @@
+enum Autors {
+  Robert Martin
+  Martin Fowler
+  Fyodor Dostoevsky
+  Sandi Metz
+  Joshua Kerievsky
+}
