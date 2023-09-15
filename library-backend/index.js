@@ -103,18 +103,21 @@ const typeDefs = `
         published: Int
         author: String
         id: String
+        genres:[String]
         
     }
     type Author {
         name: String
         id: String
         born: Int
+        bookCount: Int
         
     }
   type Query {
     bookCount: Int
     authorCount: Int
     allBooks: [Book]
+    allAuthors: [Author]
   }
 
 
@@ -125,6 +128,19 @@ const resolvers = {
     bookCount: (root, args) => books.length,
     authorCount: (root, args) => authors.length,
     allBooks: (root, args) => books,
+    allAuthors: (root, args) => authors,
+  },
+
+  Author: {
+    bookCount: (root, args) => {
+      let count = 0;
+      books.forEach((book) => {
+        if (book.author === root.name) {
+          count += 1;
+        }
+      });
+      return count;
+    },
   },
 };
 
