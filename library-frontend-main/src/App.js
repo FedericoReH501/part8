@@ -13,7 +13,7 @@ const ALL_DATA = gql`
     allBooks {
       title
       author
-      genres
+      published
     }
   }
 `;
@@ -35,7 +35,7 @@ const App = () => {
       <div></div>
       <Authors show={page === "authors"} data={response.data.allAuthors} />
 
-      <Books show={page === "books"} />
+      <Books show={page === "books"} data={response.data.allBooks} />
 
       <NewBook show={page === "add"} />
     </div>
