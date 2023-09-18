@@ -3,21 +3,16 @@ import Authors from "./components/Authors"
 import Books from "./components/Books"
 import NewBook from "./components/NewBook"
 import { useQuery } from "@apollo/client"
-import Notify from "./components/Notify"
 import { ALL_DATA } from "./components/queries"
 import SetYear from "./components/SetYear"
 
 const App = () => {
   const [page, setPage] = useState("authors")
-  const [notification, setNotification] = useState({
-    message: null,
-    errorMessage: null,
-  })
+
   const response = useQuery(ALL_DATA)
   if (response.loading) {
     return <div>Loading...</div>
   }
-
   return (
     <div>
       <div>

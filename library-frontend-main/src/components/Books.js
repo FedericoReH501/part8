@@ -1,9 +1,9 @@
 const Books = (props) => {
   if (!props.show) {
-    return null;
+    return null
   }
 
-  const books = props.data;
+  const books = props.data
 
   return (
     <div>
@@ -16,17 +16,19 @@ const Books = (props) => {
             <th>author</th>
             <th>published</th>
           </tr>
-          {books.map((a) => (
-            <tr key={a.title}>
-              <td>{a.title}</td>
-              <td>{a.author}</td>
-              <td>{a.published}</td>
-            </tr>
-          ))}
+          {books.map((a) => {
+            return (
+              <tr key={a.title}>
+                <td>{a.title}</td>
+                <td>{a.author.name}</td>
+                <td>{a.published}</td>
+              </tr>
+            )
+          })}
         </tbody>
       </table>
     </div>
-  );
-};
+  )
+}
 
-export default Books;
+export default Books
