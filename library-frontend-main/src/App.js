@@ -30,12 +30,8 @@ const App = () => {
       <Authors show={page === "authors"} data={response.data.allAuthors} />
 
       <Books show={page === "books"} data={response.data.allBooks} />
-      <SetYear
-        show={page === "set"}
-        setError={notify}
-        authors={response.data.allAuthors}
-      />
-      <NewBook show={page === "add"} setError={{ notify }} />
+      <SetYear show={page === "set"} authors={response.data.allAuthors} />
+      <NewBook show={page === "add"} />
     </div>
   )
 }
