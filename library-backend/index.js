@@ -9,16 +9,11 @@ mongoose.set("strictQuery", false)
 require("dotenv").config()
 const MONGODB_URI = process.env.MONGODB_URI
 console.log("connecting to", MONGODB_URI)
-const shower = async () => {
-  console.log("shower")
-  const data = await Book.find({})
-  console.log(data)
-}
+
 mongoose
   .connect(MONGODB_URI)
   .then(() => {
     console.log("connected to MongoDB")
-    shower()
   })
   .catch((error) => {
     console.log("error connection to MongoDB:", error.message)
@@ -60,7 +55,7 @@ const typeDefs = `
   type Query {
     bookCount: Int
     authorCount: Int
-    allBooks: [Book]
+    allBooks(author:String): [Book]
     allAuthors: [Author]
   }
 
@@ -92,21 +87,16 @@ const resolvers = {
     bookCount: async (root, args) => Book.collection.countDocuments(),
     authorCount: async (root, args) => Author.collection.countDocuments(),
     allBooks: async (root, args) => {
-      return Book.find({}).populate("author")
-      if (!args) {
-        const bookssss = await Book.find({})
-        console.log(bookssss)
-        return Book.find({})
-      }
-      let result = books
-
       if (args.author) {
-        result = books.filter((b) => b.author === args.author)
+        console.log("im here!")
+        const author = await Author.findOne({ name: args.author })
+        console.log(author)
+        return Book.find({ author: author._id }).populate("author")
       }
       if (args.genre) {
-        result = result.filter((b) => b.genres.includes(args.genre))
+        result = Book.find({ author: args.author }).populate("author")
       }
-
+      let result = await Book.find({}).populate("author")
       return result
     },
     allAuthors: async (root, args) => {
@@ -127,7 +117,6 @@ const resolvers = {
   },
 }
 
-shower
 const server = new ApolloServer({
   typeDefs,
   resolvers,
