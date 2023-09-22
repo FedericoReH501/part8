@@ -6,9 +6,13 @@ const SetYear = (props) => {
   const [name, setname] = useState("")
   const [editAuthor] = useMutation(SET_YEAR, {
     refetchQueries: [{ query: ALL_DATA }],
+    onError: (error) => {
+      props.setError(error.graphQLErrors[0].message)
+    },
   })
-  const submit = async (e) => {
+  const submit = (e) => {
     e.preventDefault()
+    console.log("submitting: ", name, parseInt(year))
     editAuthor({
       variables: {
         name: name,
@@ -28,6 +32,7 @@ const SetYear = (props) => {
         <form onSubmit={submit}>
           <div>
             <select onChange={handleChange}>
+              <option value="">--Please choose an author--</option>
               {props.authors.map((a) => {
                 return (
                   <option key={a.name} vale={a.name}>
@@ -39,7 +44,7 @@ const SetYear = (props) => {
           </div>
 
           <div>
-            published
+            Born in:
             <input
               type="number"
               value={year}

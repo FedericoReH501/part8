@@ -1,20 +1,16 @@
 const Notify = ({ notification }) => {
-  console.log(notification);
-  if (notification.message) {
+  console.log("from Notify:")
+  console.log(notification)
+  if (notification) {
     return (
       <div>
-        <p style={{ color: "green", border: "solid 2px green", width: "10vw" }}>
-          {notification.message}
+        <p style={{ color: "red", border: "solid 2px red", width: "10vw" }}>
+          {notification}
         </p>
       </div>
-    );
-  } else if (notification.errorMessage) {
-    <div>
-      <p style={{ color: "red", border: "solid 2px red", width: "10vw" }}>
-        {notification.errorMessage}
-      </p>
-    </div>;
+    )
   }
-};
+  return null
+}
 
-export default Notify;
+export default Notify
