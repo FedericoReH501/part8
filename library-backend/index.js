@@ -84,7 +84,14 @@ const typeDefs = `
 
 const resolvers = {
   Mutation: {
-    addBook: async (root, args) => {
+    addBook: async (root, args, { currentUser }) => {
+      if (!currentUser) {
+        throw new GraphQLError("You Must Login for thi operation", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+          },
+        })
+      }
       let author = await Author.findOne({ name: args.author })
 
       if (!author) {
@@ -94,7 +101,6 @@ const resolvers = {
         try {
           await book.save()
         } catch (error) {
-          console.log(error)
           await Author.findByIdAndDelete(author._id)
           throw new GraphQLError("title is not valid", {
             extensions: {
@@ -121,7 +127,14 @@ const resolvers = {
       }
       return book
     },
-    editAuthor: async (root, args) => {
+    editAuthor: async (root, args, { currentUser }) => {
+      if (!currentUser) {
+        throw new GraphQLError("You Must Login for thi operation", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+          },
+        })
+      }
       try {
         await Author.findOneAndUpdate(
           { name: args.name },
@@ -155,9 +168,7 @@ const resolvers = {
       })
     },
     login: async (root, args) => {
-      console.log("username: ", args.username)
       const user = await User.findOne({ username: args.username })
-      console.log("logged in user: ", user)
       if (!user || args.password !== "secret") {
         throw new GraphQLError("Wrong Credentials", {
           extensions: {
@@ -189,8 +200,6 @@ const resolvers = {
       return Author.find({})
     },
     me: async (root, args, context) => {
-      console.log("me")
-      console.log(context)
       return context.currentUser
     },
   },
@@ -215,10 +224,7 @@ startStandaloneServer(server, {
 
     if (auth && auth.startsWith("bearer ")) {
       const decodedToken = jwt.verify(auth.substring(7), process.env.JWT_SECRET)
-      console.log("decodedToken: ", decodedToken)
-      console.log("id", decodedToken.id)
       const currentUser = await User.findById(decodedToken.id)
-      console.log("current user: ", currentUser)
       return { currentUser }
     }
   },
