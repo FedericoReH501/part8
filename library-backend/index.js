@@ -191,6 +191,7 @@ const resolvers = {
         return Book.find({ author: author._id }).populate("author")
       }
       if (args.genre) {
+        console.log("genre selected:", args.genre)
         return Book.find({ genres: args.genre })
       }
       let result = await Book.find({}).populate("author")
@@ -221,7 +222,6 @@ startStandaloneServer(server, {
   listen: { port: 4000 },
   context: async ({ req, res }) => {
     const auth = req ? req.headers.authorization : null
-    console.log("authorization: ", auth)
     if (auth && auth.startsWith("Bearer ")) {
       const decodedToken = jwt.verify(auth.substring(7), process.env.JWT_SECRET)
       const currentUser = await User.findById(decodedToken.id)

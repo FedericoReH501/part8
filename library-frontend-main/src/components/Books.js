@@ -1,15 +1,18 @@
 import { useState } from "react"
+import { FILTERED_BOOKS } from "./queries"
+import { useQuery } from "@apollo/client"
 const Books = (props) => {
-  const [selectedGenre, setSelectedGenre] = useState(null)
+  const [selectedGenre, setSelectedGenre] = useState("refactoring")
+  const result = useQuery(FILTERED_BOOKS, { variables: selectedGenre })
   if (!props.show) {
     return null
   }
-  const filterGenre = (genre) => {
-    setSelectedGenre(genre)
+
+  if (result.loading) {
+    return <div>Loading.....</div>
   }
-  const books = selectedGenre
-    ? props.data.filter((book) => book.genres.includes(selectedGenre))
-    : props.data
+  const books = result.data.allBooks
+  console.log("books", books)
 
   let genres = []
   if (props.data) {
@@ -43,16 +46,16 @@ const Books = (props) => {
               </tr>
             )
           })}
-          <div>
-            {genres.map((genre) => (
-              <td key={genre}>
-                <button onClick={() => setSelectedGenre(genre)}>{genre}</button>
-              </td>
-            ))}
-            <button onClick={() => setSelectedGenre(null)}>Clear</button>
-          </div>
         </tbody>
       </table>
+      <div>
+        {genres.map((genre) => (
+          <button key={genre} onClick={() => setSelectedGenre(genre)}>
+            {genre}
+          </button>
+        ))}
+        <button onClick={() => setSelectedGenre(null)}>Clear</button>
+      </div>
     </div>
   )
 }

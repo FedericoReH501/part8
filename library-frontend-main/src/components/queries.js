@@ -16,6 +16,26 @@ export const ALL_DATA = gql`
     }
   }
 `
+export const ME = gql`
+  query {
+    me {
+      username
+      favoriteGenre
+    }
+  }
+`
+export const FILTERED_BOOKS = gql`
+  query filterBooksByGenre($genre: String) {
+    allBooks(genre: $genre) {
+      title
+      genres
+      author {
+        name
+      }
+      published
+    }
+  }
+`
 
 export const CREATE_BOOK = gql`
   mutation addBook(

@@ -7,10 +7,12 @@ import { ALL_DATA } from "./components/queries"
 import SetYear from "./components/SetYear"
 import Notify from "./components/Notify"
 import LoginForm from "./components/LoginForm"
+import Reccomended from "./components/Recommended"
 const App = () => {
   const [page, setPage] = useState("authors")
   const [notification, setNotification] = useState(null)
   const [token, setToken] = useState(null)
+  const [filter, setFilter] = useState(null)
   const client = useApolloClient()
   const response = useQuery(ALL_DATA)
   const notify = (message) => {
@@ -31,6 +33,7 @@ const App = () => {
           <div>
             <button onClick={() => setPage("add")}>add book</button>
             <button onClick={() => setPage("set")}>set year</button>
+            <button onClick={() => setPage("recomended")}>recomended</button>
             <button
               onClick={() => {
                 setToken(null)
@@ -47,7 +50,11 @@ const App = () => {
       </div>
 
       <Authors show={page === "authors"} data={response.data.allAuthors} />
-      <Books show={page === "books"} data={response.data.allBooks} />
+      <Books
+        show={page === "books"}
+        data={response.data.allBooks}
+        setFilter={setFilter}
+      />
       <SetYear
         show={page === "set"}
         authors={response.data.allAuthors}
@@ -60,6 +67,10 @@ const App = () => {
         setToken={setToken}
         setShow={setPage}
       ></LoginForm>
+      <Reccomended
+        show={page === "recomended"}
+        data={response.data.allBooks}
+      ></Reccomended>
       <Notify notification={notification}></Notify>
     </div>
   )
