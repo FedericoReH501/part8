@@ -86,7 +86,7 @@ const resolvers = {
   Mutation: {
     addBook: async (root, args, { currentUser }) => {
       if (!currentUser) {
-        throw new GraphQLError("You Must Login for thi operation", {
+        throw new GraphQLError("You Must Login for this operation", {
           extensions: {
             code: "BAD_USER_INPUT",
           },
@@ -96,11 +96,17 @@ const resolvers = {
 
       if (!author) {
         const newAuthor = new Author({ name: args.author })
-        author = await newAuthor.save()
+        try {
+          author = await newAuthor.save()
+        } catch (error) {
+          console.log("malemale")
+        }
         const book = new Book({ ...args, author: author._id })
         try {
           await book.save()
+          console.log("tutto bene")
         } catch (error) {
+          console.log("tutto male")
           await Author.findByIdAndDelete(author._id)
           throw new GraphQLError("title is not valid", {
             extensions: {
@@ -191,8 +197,11 @@ const resolvers = {
         return Book.find({ author: author._id }).populate("author")
       }
       if (args.genre) {
-        console.log("genre selected:", args.genre)
-        return Book.find({ genres: args.genre })
+        const result = await Book.find({ genres: args.genre }).populate(
+          "author"
+        )
+
+        return result
       }
       let result = await Book.find({}).populate("author")
       return result
